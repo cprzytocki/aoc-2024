@@ -31,8 +31,7 @@ func Day1() int {
 
 	for i := 0; i < len(left); i++ {
 
-		diff := left[i] - right[i]
-		diff = max(diff, -diff)
+		diff := lib.Abs(left[i] - right[i])
 		diffs = append(diffs, diff)
 	}
 

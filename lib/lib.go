@@ -101,3 +101,12 @@ func RemoveElementByIndex(slice []int, index int) ([]int, error) {
 
 	return newSlice, nil
 }
+
+type Pair struct {
+	Num1 int
+	Num2 int
+}
+
+func MultiplyPair(pair Pair) int {
+	return pair.Num1 * pair.Num2
+}

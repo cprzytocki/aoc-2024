@@ -98,12 +98,6 @@ func Day4() int {
 	verticalLines := getVerticalLines(matrix)
 	diagnalLines1, diagnalLines2 := getDiagonalLines(matrix, minLength)
 
-	// DEBUG
-	// fmt.Println("horizontalLines", horizontalLines)
-	// fmt.Println("verticalLines", verticalLines)
-	// fmt.Println("diagnalLines1", diagnalLines1)
-	// fmt.Println("diagnalLines2", diagnalLines2)
-
 	regexAll := []*regexp.Regexp{regexp.MustCompile(`XMAS`), regexp.MustCompile(`SAMX`)}
 
 	matches := countMatches(horizontalLines, regexAll) +
@@ -112,4 +106,64 @@ func Day4() int {
 		countMatches(diagnalLines2, regexAll)
 
 	return matches
+}
+
+/*
+*
+*	PART 2 - Didn't feel like spending time thinking of something clever after P1
+*
+ */
+
+type Position struct {
+	i, j int
+}
+
+func (p Position) topLeft() Position {
+	return Position{p.i - 1, p.j - 1}
+}
+
+func (p Position) topRight() Position {
+	return Position{p.i + 1, p.j - 1}
+}
+
+func (p Position) bottomLeft() Position {
+	return Position{p.i - 1, p.j + 1}
+}
+
+func (p Position) bottomRight() Position {
+	return Position{p.i + 1, p.j + 1}
+}
+
+func (p Position) checkVal(matrix [][]string, str string) bool {
+	return matrix[p.i][p.j] == str
+}
+
+func checkIfXmas(matrix [][]string, pos Position) bool {
+	tL, tR, bL, bR := pos.topLeft(), pos.topRight(), pos.bottomLeft(), pos.bottomRight()
+
+	firstDiagnal := (tL.checkVal(matrix, "M") && bR.checkVal(matrix, "S")) ||
+		(tL.checkVal(matrix, "S") && bR.checkVal(matrix, "M"))
+
+	secondDiagnal := (tR.checkVal(matrix, "M") && bL.checkVal(matrix, "S")) ||
+		(tR.checkVal(matrix, "S") && bL.checkVal(matrix, "M"))
+
+	return firstDiagnal && secondDiagnal
+}
+
+func Day4Part2() int {
+	matrix := lib.ScanFileToMatrix("day4/input")
+	count := 0
+
+	// starting at 1 and ending 1 early to avoid outside edges
+	for i := 1; i < len(matrix)-1; i++ {
+		for j := 1; j < len(matrix[i])-1; j++ {
+			if matrix[i][j] == "A" {
+				if checkIfXmas(matrix, Position{i, j}) {
+					count++
+				}
+			}
+		}
+	}
+
+	return count
 }

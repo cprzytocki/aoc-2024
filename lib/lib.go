@@ -77,6 +77,30 @@ func ScanFileToRows(filepath string) [][]int {
 	return numbersArray
 }
 
+func ScanFileToMatrix(filepath string) [][]string {
+	file, err := os.Open(filepath)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+	matrix := [][]string{}
+	// Declare a slice to hold the parsed strings
+	scanner := bufio.NewScanner(file)
+
+	for scanner.Scan() {
+		// Get the line from the scanner
+		line := scanner.Text()
+		stringArray := []string{}
+
+		for _, char := range line {
+			stringArray = append(stringArray, string(char))
+		}
+		matrix = append(matrix, stringArray)
+	}
+	return matrix
+}
+
 func SumInts(nums []int) int {
 	sum := 0
 	for i := 0; i < len(nums); i++ {

@@ -5,11 +5,12 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"slices"
 	"strconv"
 	"strings"
 )
 
-func ScanFileToNumbers(filepath string) []int {
+func ScanFileToNumbers(filepath string, separator ...string) []int {
 	file, err := os.Open(filepath)
 
 	if err != nil {
@@ -26,8 +27,12 @@ func ScanFileToNumbers(filepath string) []int {
 		// Get the line from the scanner
 		line := scanner.Text()
 
-		// Split the line by spaces (you can modify this depending on your file format)
-		parts := strings.Fields(line)
+		var parts []string
+		if len(separator) > 0 {
+			parts = strings.Split(line, separator[0])
+		} else {
+			parts = strings.Fields(line)
+		}
 
 		// Convert each part to an integer and append it to the slice
 		for _, part := range parts {
@@ -43,7 +48,7 @@ func ScanFileToNumbers(filepath string) []int {
 
 }
 
-func ScanFileToRows(filepath string) [][]int {
+func ScanFileToRows(filepath string, separator ...string) [][]int {
 	file, err := os.Open(filepath)
 
 	if err != nil {
@@ -59,7 +64,12 @@ func ScanFileToRows(filepath string) [][]int {
 	for scanner.Scan() {
 		// Get the line from the scanner
 		line := scanner.Text()
-		parts := strings.Fields(line)
+		var parts []string
+		if len(separator) > 0 {
+			parts = strings.Split(line, separator[0])
+		} else {
+			parts = strings.Fields(line)
+		}
 
 		numbersRow := []int{}
 
@@ -133,4 +143,22 @@ type Pair struct {
 
 func MultiplyPair(pair Pair) int {
 	return pair.Num1 * pair.Num2
+}
+
+func ArraysHaveSameElement(arr1 []int, arr2 []int) bool {
+	for _, item := range arr1 {
+		if slices.Contains(arr2, item) {
+			return true
+		}
+	}
+	return false
+}
+
+func ArrayContainsAllElements(arr1 []int, arr2 []int) bool {
+	for _, item := range arr2 {
+		if !slices.Contains(arr1, item) {
+			return false
+		}
+	}
+	return true
 }

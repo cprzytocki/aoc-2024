@@ -111,6 +111,38 @@ func ScanFileToMatrix(filepath string) [][]string {
 	return matrix
 }
 
+func ScanFileToMatrix2(filepath string) ([][]string, int, int) {
+	file, err := os.Open(filepath)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+	matrix := [][]string{}
+	// Declare a slice to hold the parsed strings
+	scanner := bufio.NewScanner(file)
+
+	startingPoint := Pair{0, 0}
+	searchString := "^v><"
+
+	row := 0
+	for scanner.Scan() {
+		// Get the line from the scanner
+		line := scanner.Text()
+		stringArray := []string{}
+
+		for j, char := range line {
+			if strings.Contains(searchString, string(char)) {
+				startingPoint = Pair{row, j}
+			}
+			stringArray = append(stringArray, string(char))
+		}
+		matrix = append(matrix, stringArray)
+		row++
+	}
+	return matrix, startingPoint.Num1, startingPoint.Num2
+}
+
 func SumInts(nums []int) int {
 	sum := 0
 	for i := 0; i < len(nums); i++ {
@@ -161,4 +193,16 @@ func ArrayContainsAllElements(arr1 []int, arr2 []int) bool {
 		}
 	}
 	return true
+}
+
+func WriteMatrixToFile(filepath string, matrix [][]string) {
+	file, err := os.Create(filepath)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+
+	for _, row := range matrix {
+		file.WriteString(strings.Join(row, "") + "\n")
+	}
 }
